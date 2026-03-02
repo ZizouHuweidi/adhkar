@@ -14,33 +14,25 @@ pub struct DhikrJson {
 pub struct DhikrCategory {
     pub slug: String,
     pub name: String,
-    #[serde(default)]
     pub name_ar: String,
-    #[serde(default)]
+    pub description: Option<String>,
     pub dhikr: Vec<DhikrItem>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct DhikrItem {
-    #[serde(default)]
     pub title: String,
     pub arabic: String,
-    #[serde(default)]
     pub translation: String,
-    #[serde(default)]
     pub transliteration: String,
-    #[serde(default)]
     pub reference: String,
-    #[serde(default)]
     pub virtue: String,
-    #[serde(default)]
     pub explanation: String,
-    #[serde(default)]
     pub count: String,
 }
 
 pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    if is_db_empty().await? {
+    if !is_db_empty().await? {
         info!("Database already has content, skipping data load");
         return Ok(());
     }
@@ -66,13 +58,15 @@ pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send +
         let slug = cat.slug.clone();
         let name = cat.name.clone();
         let name_ar = cat.name_ar.clone();
+        let description = cat.description.clone().unwrap_or_default();
 
         sqlx::query(
-            "INSERT OR IGNORE INTO categories (name_en, name_ar, slug, sort_order) VALUES (?1, ?2, ?3, ?4)"
+            "INSERT OR IGNORE INTO categories (name_en, name_ar, slug, description_en, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)"
         )
         .bind(&name)
         .bind(&name_ar)
         .bind(&slug)
+        .bind(&description)
         .bind(index as i64)
         .execute(pool)
         .await?;
@@ -86,13 +80,16 @@ pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send +
         for item in &cat.dhikr {
             sqlx::query(
                 r#"INSERT OR IGNORE INTO content
-                   (type_id, source_id, arabic, translation_en, transliteration, count, source, reference)
-                   VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7)"#
+                   (type_id, source_id, title, arabic, translation_en, transliteration, virtue, explanation, count, reference)
+                   VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)"#
             )
             .bind(category_id)
+            .bind(&item.title)
             .bind(&item.arabic)
             .bind(&item.translation)
             .bind(&item.transliteration)
+            .bind(&item.virtue)
+            .bind(&item.explanation)
             .bind(&parse_count(&item.count))
             .bind(&item.reference)
             .execute(pool)
@@ -106,13 +103,15 @@ pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send +
         let slug = cat.slug.clone();
         let name = cat.name.clone();
         let name_ar = cat.name_ar.clone();
+        let description = cat.description.clone().unwrap_or_default();
 
         sqlx::query(
-            "INSERT OR IGNORE INTO categories (name_en, name_ar, slug, sort_order) VALUES (?1, ?2, ?3, ?4)"
+            "INSERT OR IGNORE INTO categories (name_en, name_ar, slug, description_en, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)"
         )
         .bind(&name)
         .bind(&name_ar)
         .bind(&slug)
+        .bind(&description)
         .bind((main_count + index) as i64)
         .execute(pool)
         .await?;
@@ -126,13 +125,16 @@ pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send +
         for item in &cat.dhikr {
             sqlx::query(
                 r#"INSERT OR IGNORE INTO content
-                   (type_id, source_id, arabic, translation_en, transliteration, count, source, reference)
-                   VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7)"#
+                   (type_id, source_id, title, arabic, translation_en, transliteration, virtue, explanation, count, reference)
+                   VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)"#
             )
             .bind(category_id)
+            .bind(&item.title)
             .bind(&item.arabic)
             .bind(&item.translation)
             .bind(&item.transliteration)
+            .bind(&item.virtue)
+            .bind(&item.explanation)
             .bind(&parse_count(&item.count))
             .bind(&item.reference)
             .execute(pool)

@@ -1,26 +1,37 @@
 use once_cell::sync::OnceCell;
 use sqlx::{SqlitePool, Row, Pool, Sqlite};
 use std::path::PathBuf;
-use log::info;
+use log::{info, error};
 
 static DB: OnceCell<SqlitePool> = OnceCell::new();
 
 pub fn get_db_path() -> PathBuf {
     let data_dir = dirs::data_local_dir()
-        .unwrap_or_else(|| PathBuf::from("."))
+        .unwrap_or_else(|| {
+            error!("Could not find data_local_dir, using current directory");
+            PathBuf::from(".")
+        })
         .join("adhkar");
     
-    std::fs::create_dir_all(&data_dir).ok();
-    data_dir.join("adhkar.db")
+    if let Err(e) = std::fs::create_dir_all(&data_dir) {
+        error!("Failed to create data directory: {}", e);
+    }
+    
+    let db_path = data_dir.join("adhkar.db");
+    info!("Database path: {:?}", db_path);
+    db_path
 }
 
 pub async fn init_db() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let db_path = get_db_path();
-    let db_url = format!("sqlite:{}", db_path.display());
+    let db_url = format!("sqlite:{}?mode=rwc", db_path.display());
     
     info!("Initializing database at: {:?}", db_path);
     
-    let pool = SqlitePool::connect(&db_url).await?;
+    let pool = SqlitePool::connect(&db_url).await.map_err(|e| {
+        error!("Failed to connect to database: {}", e);
+        e
+    })?;
     
     create_tables(&pool).await?;
     
@@ -85,12 +96,15 @@ async fn create_tables(pool: &Pool<Sqlite>) -> Result<(), Box<dyn std::error::Er
             type_id INTEGER NOT NULL DEFAULT 1,
             source_id INTEGER NOT NULL,
             
+            title TEXT,
             arabic TEXT NOT NULL,
             transliteration TEXT,
             translation_en TEXT,
             translation_ar TEXT,
             description_en TEXT,
             description_ar TEXT,
+            virtue TEXT,
+            explanation TEXT,
             
             count INTEGER DEFAULT 1,
             source TEXT,

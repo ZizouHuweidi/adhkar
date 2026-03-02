@@ -40,8 +40,8 @@ async fn get_categories() -> Result<Vec<Category>, String> {
 async fn get_dhikr_by_category(category_id: i64) -> Result<Vec<Content>, String> {
     let pool = get_connection();
     let rows = sqlx::query(
-        "SELECT id, type_id, source_id, arabic, transliteration, translation_en, translation_ar,
-                description_en, description_ar, count, source, reference, grade, hadith_arabic, hadith_english
+        "SELECT id, type_id, source_id, title, arabic, transliteration, translation_en, translation_ar,
+                description_en, description_ar, virtue, explanation, count, source, reference, grade, hadith_arabic, hadith_english
          FROM content WHERE type_id = 1 AND source_id = ?1"
     )
     .bind(category_id)
@@ -55,12 +55,15 @@ async fn get_dhikr_by_category(category_id: i64) -> Result<Vec<Content>, String>
                 id: row.get("id"),
                 type_id: row.get("type_id"),
                 source_id: row.get("source_id"),
+                title: row.get("title"),
                 arabic: row.get("arabic"),
                 transliteration: row.get("transliteration"),
                 translation_en: row.get("translation_en"),
                 translation_ar: row.get("translation_ar"),
                 description_en: row.get("description_en"),
                 description_ar: row.get("description_ar"),
+                virtue: row.get("virtue"),
+                explanation: row.get("explanation"),
                 count: row.get("count"),
                 source: row.get("source"),
                 reference: row.get("reference"),
@@ -76,8 +79,8 @@ async fn get_dhikr_by_category(category_id: i64) -> Result<Vec<Content>, String>
 async fn get_all_dhikr() -> Result<Vec<Content>, String> {
     let pool = get_connection();
     let rows = sqlx::query(
-        "SELECT id, type_id, source_id, arabic, transliteration, translation_en, translation_ar,
-                description_en, description_ar, count, source, reference, grade, hadith_arabic, hadith_english
+        "SELECT id, type_id, source_id, title, arabic, transliteration, translation_en, translation_ar,
+                description_en, description_ar, virtue, explanation, count, source, reference, grade, hadith_arabic, hadith_english
          FROM content WHERE type_id = 1"
     )
     .fetch_all(pool)
@@ -90,12 +93,15 @@ async fn get_all_dhikr() -> Result<Vec<Content>, String> {
                 id: row.get("id"),
                 type_id: row.get("type_id"),
                 source_id: row.get("source_id"),
+                title: row.get("title"),
                 arabic: row.get("arabic"),
                 transliteration: row.get("transliteration"),
                 translation_en: row.get("translation_en"),
                 translation_ar: row.get("translation_ar"),
                 description_en: row.get("description_en"),
                 description_ar: row.get("description_ar"),
+                virtue: row.get("virtue"),
+                explanation: row.get("explanation"),
                 count: row.get("count"),
                 source: row.get("source"),
                 reference: row.get("reference"),
@@ -113,8 +119,8 @@ async fn search_dhikr(query: String) -> Result<Vec<Content>, String> {
     let search_pattern = format!("%{}%", query);
 
     let rows = sqlx::query(
-        "SELECT id, type_id, source_id, arabic, transliteration, translation_en, translation_ar,
-                description_en, description_ar, count, source, reference, grade, hadith_arabic, hadith_english
+        "SELECT id, type_id, source_id, title, arabic, transliteration, translation_en, translation_ar,
+                description_en, description_ar, virtue, explanation, count, source, reference, grade, hadith_arabic, hadith_english
          FROM content
          WHERE type_id = 1 AND (arabic LIKE ?1 OR translation_en LIKE ?1 OR transliteration LIKE ?1)
          LIMIT 50"
@@ -130,12 +136,15 @@ async fn search_dhikr(query: String) -> Result<Vec<Content>, String> {
                 id: row.get("id"),
                 type_id: row.get("type_id"),
                 source_id: row.get("source_id"),
+                title: row.get("title"),
                 arabic: row.get("arabic"),
                 transliteration: row.get("transliteration"),
                 translation_en: row.get("translation_en"),
                 translation_ar: row.get("translation_ar"),
                 description_en: row.get("description_en"),
                 description_ar: row.get("description_ar"),
+                virtue: row.get("virtue"),
+                explanation: row.get("explanation"),
                 count: row.get("count"),
                 source: row.get("source"),
                 reference: row.get("reference"),
@@ -167,12 +176,15 @@ async fn get_favorites() -> Result<Vec<Content>, String> {
                 id: row.get("id"),
                 type_id: row.get("type_id"),
                 source_id: row.get("source_id"),
+                title: row.get("title"),
                 arabic: row.get("arabic"),
                 transliteration: row.get("transliteration"),
                 translation_en: row.get("translation_en"),
                 translation_ar: row.get("translation_ar"),
                 description_en: row.get("description_en"),
                 description_ar: row.get("description_ar"),
+                virtue: row.get("virtue"),
+                explanation: row.get("explanation"),
                 count: row.get("count"),
                 source: row.get("source"),
                 reference: row.get("reference"),
@@ -412,12 +424,15 @@ async fn get_favorites_by_folder(folder_id: i64) -> Result<Vec<Content>, String>
                 id: row.get("id"),
                 type_id: row.get("type_id"),
                 source_id: row.get("source_id"),
+                title: row.get("title"),
                 arabic: row.get("arabic"),
                 transliteration: row.get("transliteration"),
                 translation_en: row.get("translation_en"),
                 translation_ar: row.get("translation_ar"),
                 description_en: row.get("description_en"),
                 description_ar: row.get("description_ar"),
+                virtue: row.get("virtue"),
+                explanation: row.get("explanation"),
                 count: row.get("count"),
                 source: row.get("source"),
                 reference: row.get("reference"),
@@ -466,12 +481,15 @@ async fn get_favorites_with_folders() -> Result<Vec<(Folder, Vec<Content>)>, Str
                     id: row.get("id"),
                     type_id: row.get("type_id"),
                     source_id: row.get("source_id"),
+                    title: row.get("title"),
                     arabic: row.get("arabic"),
                     transliteration: row.get("transliteration"),
                     translation_en: row.get("translation_en"),
                     translation_ar: row.get("translation_ar"),
                     description_en: row.get("description_en"),
                     description_ar: row.get("description_ar"),
+                    virtue: row.get("virtue"),
+                    explanation: row.get("explanation"),
                     count: row.get("count"),
                     source: row.get("source"),
                     reference: row.get("reference"),
@@ -598,16 +616,19 @@ pub fn run() {
         .plugin(tauri_plugin_cli::init())
         .plugin(tauri_plugin_opener::init())
         .setup(|_app| {
-            tauri::async_runtime::spawn(async move {
+            let rt = tauri::async_runtime::handle();
+            
+            rt.block_on(async {
                 if let Err(e) = init_db().await {
                     error!("Failed to initialize database: {}", e);
-                    return;
+                    panic!("Cannot start without database: {}", e);
                 }
 
                 if let Err(e) = data_loader::load_adhkar_data().await {
                     error!("Failed to load adhkar data: {}", e);
                 }
             });
+            
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
