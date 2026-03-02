@@ -1,9 +1,27 @@
-# Mudhakir (WIP)
+# Adhkar
 
-goals of mudhakir are the following:
+A lightweight, cross-platform desktop application for daily adhkar reminders
 
-- lightweight and cross platform dhikr app
-- support for headless mode (systray and notifications without starting the gui)
-- cli support to query the dhikr database through commands and support scripting capabilities
+## Features
 
-it will be developed using tauri, react and typescript. mobile support is tbd.
+- Browse and track daily adhkar
+- Mark favorite dhikr for quick access
+- Support for dark/light themes
+- English and Arabic language support 
+- Desktop notifications for adhkar reminders (wip)
+- Headless mode with system tray (wip)
+
+## Tech Stack
+
+- **Backend:** Rust with Tauri
+- **Database:** SQLite (via sqlx)
+- **Frontend:** React + TypeScript + Vite
+- **UI:** Tailwind CSS + shadcn/ui
+
+## Credits & Inspiration
+
+This project was inspired by the [dhikr and dua](https://lifewithallah.com) mobile app, and was made to essentially be a desktop app version of it with daemon and custom notification support
+
+## License
+
+MIT

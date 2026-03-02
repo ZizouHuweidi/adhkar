@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "mudhakir",
+  "productName": "adhkar",
   "version": "0.1.0",
-  "identifier": "com.mudhakir.app",
+  "identifier": "com.github.zizouhuweidi.adhkar",
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
@@ -12,9 +12,13 @@
   "app": {
     "windows": [
       {
-        "title": "mudhakir",
-        "width": 800,
-        "height": 600
+        "title": "Adhkar",
+        "width": 900,
+        "height": 700,
+        "minWidth": 600,
+        "minHeight": 500,
+        "resizable": true,
+        "center": true
       }
     ],
     "security": {
@@ -34,25 +38,85 @@
   },
   "plugins": {
     "cli": {
-      "description": "Tauri CLI Plugin Example",
+      "description": "Adhkar - Dhikr and Dua App",
       "args": [
         {
-          "short": "v",
-          "name": "verbose",
-          "description": "Verbosity level"
+          "name": "mode",
+          "short": "m",
+          "takesValue": true,
+          "description": "Run mode: gui or daemon",
+          "possibleValues": ["gui", "daemon"]
         }
       ],
       "subcommands": {
-        "run": {
-          "description": "Run the application",
+        "list": {
+          "description": "List categories or dhikr",
           "args": [
             {
-              "name": "debug",
-              "description": "Run application in debug mode"
+              "name": "type",
+              "takesValue": true,
+              "description": "What to list: categories, dhikr",
+              "possibleValues": ["categories", "dhikr"]
             },
             {
-              "name": "release",
-              "description": "Run application in release mode"
+              "name": "category",
+              "short": "c",
+              "takesValue": true,
+              "description": "Category slug (for listing dhikr)"
+            }
+          ]
+        },
+        "show": {
+          "description": "Show a specific dhikr",
+          "args": [
+            {
+              "name": "id",
+              "takesValue": true,
+              "description": "Dhikr ID"
+            }
+          ]
+        },
+        "search": {
+          "description": "Search dhikr",
+          "args": [
+            {
+              "name": "query",
+              "takesValue": true,
+              "description": "Search query"
+            }
+          ]
+        },
+        "random": {
+          "description": "Show a random dhikr"
+        },
+        "history": {
+          "description": "Show notification history",
+          "args": [
+            {
+              "name": "limit",
+              "takesValue": true,
+              "description": "Number of entries to show"
+            }
+          ]
+        },
+        "config": {
+          "description": "Get or set configuration",
+          "args": [
+            {
+              "name": "action",
+              "takesValue": true,
+              "description": "get or set",
+              "possibleValues": ["get", "set"]
+            },
+            {
+              "name": "key",
+              "takesValue": true,
+              "description": "Setting key"
+            },
+            {
+              "name": "value",
+              "takesValue": true,
+              "description": "Setting value (for set)"
             }
           ]
         }
