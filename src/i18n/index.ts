@@ -22,6 +22,13 @@ export interface AppTranslations {
     addFavorite: string;
     removeFavorite: string;
     close: string;
+    showTranslation: string;
+    hideTranslation: string;
+    translation: string;
+    transliteration: string;
+    virtue: string;
+    explanation: string;
+    reference: string;
   };
   favorites: {
     empty: string;
@@ -68,6 +75,13 @@ export const translations: Record<Language, AppTranslations> = {
       addFavorite: "Add to Favorites",
       removeFavorite: "Remove from Favorites",
       close: "Close",
+      showTranslation: "Show translation",
+      hideTranslation: "Hide translation",
+      translation: "Translation",
+      transliteration: "Transliteration",
+      virtue: "Virtue",
+      explanation: "Explanation",
+      reference: "Reference",
     },
     favorites: {
       empty: "No favorites yet",
@@ -92,11 +106,11 @@ export const translations: Record<Language, AppTranslations> = {
   },
   ar: {
     app: {
-      title: "أثر",
+      title: "أذكار",
       subtitle: "الذكر والدعاء",
     },
     tabs: {
-      dhikr: "الذكر",
+      dhikr: "أذكار",
       favorites: "المفضلة",
       history: "السجل",
       settings: "الإعدادات",
@@ -112,6 +126,13 @@ export const translations: Record<Language, AppTranslations> = {
       addFavorite: "إضافة للمفضلة",
       removeFavorite: "إزالة من المفضلة",
       close: "إغلاق",
+      showTranslation: "عرض الترجمة",
+      hideTranslation: "إخفاء الترجمة",
+      translation: "الترجمة",
+      transliteration: "النطق",
+      virtue: "الفضيلة",
+      explanation: "الشرح",
+      reference: "المرجع",
     },
     favorites: {
       empty: "لا توجد مفضلات بعد",

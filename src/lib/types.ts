@@ -14,12 +14,15 @@ export interface Content {
   id: number;
   type_id: number;
   source_id: number;
+  title: string | null;
   arabic: string;
   transliteration: string | null;
   translation_en: string | null;
   translation_ar: string | null;
   description_en: string | null;
   description_ar: string | null;
+  virtue: string | null;
+  explanation: string | null;
   count: number | null;
   source: string | null;
   reference: string | null;

@@ -18,6 +18,60 @@ interface DhikrListProps {
   onToggleCategoryFavorite: (categoryId: number) => void;
 }
 
+function getDhikrTitle(dhikr: Content): string {
+  if (dhikr.title) return dhikr.title;
+  // Fallback: first 30 chars of Arabic
+  const arabicWords = dhikr.arabic.split(/\s+/).slice(0, 4).join(" ");
+  return arabicWords.length > 30 ? arabicWords.substring(0, 30) + "..." : arabicWords;
+}
+
+interface ExpandedContentProps {
+  dhikr: Content;
+}
+
+function ExpandedContent({ dhikr }: ExpandedContentProps) {
+  const { t } = useLanguage();
+
+  return (
+    <div className="mt-3 space-y-3">
+      {dhikr.translation_en && (
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-1">{t.dhikr.translation}</p>
+          <p className="text-sm text-muted-foreground">{dhikr.translation_en}</p>
+        </div>
+      )}
+
+      {dhikr.transliteration && (
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-1">{t.dhikr.transliteration}</p>
+          <p className="text-sm text-muted-foreground italic">{dhikr.transliteration}</p>
+        </div>
+      )}
+
+      {dhikr.reference && (
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-1">{t.dhikr.reference}</p>
+          <p className="text-sm text-muted-foreground">{dhikr.reference}</p>
+        </div>
+      )}
+
+      {dhikr.virtue && (
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-1">{t.dhikr.virtue}</p>
+          <p className="text-sm text-muted-foreground">{dhikr.virtue}</p>
+        </div>
+      )}
+
+      {dhikr.explanation && (
+        <div>
+          <p className="text-xs font-medium text-muted-foreground mb-1">{t.dhikr.explanation}</p>
+          <p className="text-sm text-muted-foreground">{dhikr.explanation}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function DhikrList({
   categories,
   dhikrList,
@@ -121,6 +175,8 @@ export function DhikrList({
     setExpandedDhikr(new Set());
   };
 
+  const categoryDescription = selectedCategory.description_en;
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
@@ -140,11 +196,17 @@ export function DhikrList({
         </div>
       </div>
 
-      <h2 className="text-lg sm:text-xl font-bold mb-4">
+      <h2 className="text-lg sm:text-xl font-bold mb-2">
         {language === "ar" && selectedCategory.name_ar
           ? selectedCategory.name_ar
           : selectedCategory.name_en}
       </h2>
+
+      {categoryDescription && (
+        <p className="text-sm text-muted-foreground mb-4">
+          {categoryDescription}
+        </p>
+      )}
 
       {showToc && (
         <div className="mb-4 p-3 bg-secondary rounded-lg">
@@ -171,7 +233,7 @@ export function DhikrList({
                 }}
                 className="block w-full text-start text-sm text-muted-foreground hover:text-foreground py-1"
               >
-                {index + 1}. {dhikr.arabic.substring(0, 40)}...
+                {index + 1}. {getDhikrTitle(dhikr)}
               </button>
             ))}
           </div>
@@ -195,28 +257,25 @@ export function DhikrList({
                   className="w-full p-3 sm:p-4 flex items-start justify-between gap-3 text-start"
                 >
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs text-muted-foreground mr-2">{index + 1}.</span>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs text-muted-foreground">{index + 1}.</span>
+                      {dhikr.title && (
+                        <span className="text-xs font-medium text-primary">{dhikr.title}</span>
+                      )}
+                    </div>
                     <p
                       className="text-lg sm:text-xl font-medium arabic-text"
                       dir="rtl"
                     >
                       {dhikr.arabic}
                     </p>
-                    {isExpanded && dhikr.translation_en && (
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {dhikr.translation_en}
-                      </p>
-                    )}
-                    {isExpanded && dhikr.reference && (
-                      <p className="text-xs text-muted-foreground mt-1 italic">
-                        {dhikr.reference}
-                      </p>
-                    )}
-                    {dhikr.count && dhikr.count > 1 && (
-                      <span className="text-xs text-muted-foreground ml-2">
+                    {dhikr.count && dhikr.count > 0 && (
+                      <span className="text-xs text-muted-foreground mt-1 inline-block">
                         ({dhikr.count}x)
                       </span>
                     )}
+                    
+                    {isExpanded && <ExpandedContent dhikr={dhikr} />}
                   </div>
                   <div className="flex flex-col items-end gap-2 shrink-0">
                     <Button

@@ -61,7 +61,7 @@ pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send +
         let description = cat.description.clone().unwrap_or_default();
 
         sqlx::query(
-            "INSERT OR IGNORE INTO categories (name_en, name_ar, slug, description_en, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)"
+            "INSERT OR REPLACE INTO categories (name_en, name_ar, slug, description_en, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)"
         )
         .bind(&name)
         .bind(&name_ar)
@@ -78,8 +78,9 @@ pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send +
         let category_id: i64 = row.get("id");
 
         for item in &cat.dhikr {
+            eprintln!("DEBUG: Loading dhikr: title='{}', translation_len={}", item.title, item.translation.len());
             sqlx::query(
-                r#"INSERT OR IGNORE INTO content
+                r#"INSERT OR REPLACE INTO content
                    (type_id, source_id, title, arabic, translation_en, transliteration, virtue, explanation, count, reference)
                    VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)"#
             )
@@ -106,7 +107,7 @@ pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send +
         let description = cat.description.clone().unwrap_or_default();
 
         sqlx::query(
-            "INSERT OR IGNORE INTO categories (name_en, name_ar, slug, description_en, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)"
+            "INSERT OR REPLACE INTO categories (name_en, name_ar, slug, description_en, sort_order) VALUES (?1, ?2, ?3, ?4, ?5)"
         )
         .bind(&name)
         .bind(&name_ar)
@@ -124,7 +125,7 @@ pub async fn load_adhkar_data() -> Result<(), Box<dyn std::error::Error + Send +
 
         for item in &cat.dhikr {
             sqlx::query(
-                r#"INSERT OR IGNORE INTO content
+                r#"INSERT OR REPLACE INTO content
                    (type_id, source_id, title, arabic, translation_en, transliteration, virtue, explanation, count, reference)
                    VALUES (1, ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)"#
             )
