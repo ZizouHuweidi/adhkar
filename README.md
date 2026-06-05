@@ -1,27 +1,30 @@
 # Adhkar
 
-A lightweight, cross-platform desktop application for daily adhkar reminders
+Offline desktop app for reading daily Islamic adhkar
 
-## Features
+## Development
 
-- Browse and track daily adhkar
-- Mark favorite dhikr for quick access
-- Support for dark/light themes
-- English and Arabic language support 
-- Desktop notifications for adhkar reminders (wip)
-- Headless mode with system tray (wip)
+Install dependencies:
 
-## Tech Stack
+```bash
+npm install
+```
 
-- **Backend:** Rust with Tauri
-- **Database:** SQLite (via sqlx)
-- **Frontend:** React + TypeScript + Vite
-- **UI:** Tailwind CSS + shadcn/ui
+Start the app:
 
-## Credits & Inspiration
+```bash
+npm start
+```
 
-This project was inspired by the [dhikr and dua](https://lifewithallah.com) mobile app, and was made to essentially be a desktop app version of it with daemon and custom notification support
+Run checks:
 
-## License
+```bash
+npm run lint
+npm run build
+```
 
-MIT
+Package for the current platform:
+
+```bash
+npm run package
+```
