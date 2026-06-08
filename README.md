@@ -1,30 +1,12 @@
 # Adhkar
 
-Offline desktop app for reading daily Islamic adhkar
+desktop app for reading daily Islamic adhkar with clear Arabic typography.
 
-## Development
+## Build And Run
 
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start the app:
+Requires Qt 6, CMake, Ninja, a C++ compiler, and `just`.
 
 ```bash
-npm start
-```
-
-Run checks:
-
-```bash
-npm run lint
-npm run build
-```
-
-Package for the current platform:
-
-```bash
-npm run package
+just build
+just run
 ```
