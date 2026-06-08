@@ -2,6 +2,8 @@ set shell := ["bash", "-uc"]
 
 build_dir := "build"
 app := "adhkar"
+cli := "adhkarctl"
+daemon := "adhkar-daemon"
 
 # List available recipes.
 default:
@@ -30,21 +32,45 @@ run: build
 run-offscreen: build
     @QT_QPA_PLATFORM=offscreen timeout 5s ./{{build_dir}}/{{app}}; status=$?; test "$status" = 0 -o "$status" = 124
 
+# Run the CLI. Usage: just ctl -- categories
+ctl *args: build
+    ./{{build_dir}}/{{cli}} {{args}}
+
+# Show config, database, and cache paths.
+paths: build
+    ./{{build_dir}}/{{cli}} paths
+
+# List dhikr categories using the shared core API.
+categories: build
+    ./{{build_dir}}/{{cli}} categories
+
+# Search adhkar using the shared core API. Usage: just search mercy
+search *query: build
+    ./{{build_dir}}/{{cli}} search {{query}}
+
+# Show daemon initialization status.
+daemon-status: build
+    ./{{build_dir}}/{{daemon}} --status
+
+# Run the headless daemon loop.
+daemon: build
+    ./{{build_dir}}/{{daemon}}
+
 # Run quick verification checks.
 check: build run-offscreen
 
 # Lint QML files. This is intentionally separate because the current prototype
 # uses dynamic JSON data and a single large QML file, which makes qmllint noisy.
 lint-qml:
-    qmllint-qt6 qml/Main.qml
+    qmllint-qt6 qml/*.qml
 
 # Format QML files in place.
 fmt-qml:
-    qmlformat-qt6 -i qml/Main.qml
+    qmlformat-qt6 -i qml/*.qml
 
 # Format C++ files in place.
 fmt-cpp:
-    clang-format -i src/*.cpp
+    clang-format -i src/core/*.cpp src/gui/*.cpp src/cli/*.cpp src/daemon/*.cpp
 
 # Format source files.
 fmt: fmt-qml fmt-cpp
