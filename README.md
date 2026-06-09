@@ -35,10 +35,3 @@ The headless daemon is being built for future reminders and notifications:
 ```bash
 just daemon-status
 ```
-
-## Notes
-
-- Arabic text currently uses the bundled Kitab font.
-- Settings are stored in the XDG config directory.
-- App data is stored in a local SQLite database under the XDG data directory.
-- Qt is used through open-source, dynamically linked packages.
